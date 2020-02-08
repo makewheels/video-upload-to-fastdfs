@@ -39,7 +39,8 @@ public class UploadToFastdfs {
      * @param videoId
      * @return
      */
-    private List<MakeM3u8Result.Ts> uploadTsList(MakeM3u8Result makeM3u8Result, String title, String videoId) {
+    private List<MakeM3u8Result.Ts> uploadTsList(MakeM3u8Result makeM3u8Result,
+                                                 String title, String videoId) {
         //为了用文件大小显示进度，先统计所有碎片总大小
         long totalSize = 0;
         long uploadSize = 0;
@@ -49,6 +50,7 @@ public class UploadToFastdfs {
         }
         List<MakeM3u8Result.Ts> tsList = new ArrayList<>();
         //执行上传
+        long beforeUploadTime = System.currentTimeMillis();
         for (int i = 0; i < tsFileList.size(); i++) {
             //上传到文件服务器
             File tsFile = tsFileList.get(i);
@@ -58,6 +60,28 @@ public class UploadToFastdfs {
             } catch (IOException | MyException e) {
                 e.printStackTrace();
             }
+            //ts文件大小
+            long tsFileSize = tsFile.length();
+            //显示进度
+            uploadSize += tsFileSize;
+            double percent = uploadSize * 1.0 / totalSize * 100;
+            String format = String.format("%.2f", percent);
+            //花费时间，单位转化为秒
+            double spendTime = (System.currentTimeMillis() - beforeUploadTime) / 1000;
+            if (spendTime == 0) {
+                spendTime = 0.001;
+            }
+            //上传速度
+            double speed = uploadSize / spendTime;
+            String speedString = FileUtil.getSizeString((long) (speed)) + "/s ";
+            //剩余时间
+            long remainSize = totalSize - uploadSize;
+            int remainSecond = (int) (remainSize / speed);
+            int minute = remainSecond / 60;
+            int second = remainSecond % 60;
+            System.out.println(minute + ":" + second + " " + speedString + format + "% (" + (i + 1)
+                    + "/" + tsFileList.size() + ") " + FileUtil.getSizeString(tsFileSize) + " "
+                    + title + " " + fastdfsFileId);
 
             //保存ts
             MakeM3u8Result.Ts ts = new MakeM3u8Result.Ts();
@@ -65,21 +89,13 @@ public class UploadToFastdfs {
             ts.setFastdfsFileId(fastdfsFileId);
             ts.setVideoId(videoId);
             ts.setFilename(tsFile.getName());
-            ts.setFilesize(tsFile.length());
+            ts.setFilesize(tsFileSize);
             //设置索引，为了改m3u8文件的时候用
             String baseName = FilenameUtils.getBaseName(tsFile.getName());
             ts.setIndex(Integer.parseInt(baseName.split("-")[1]));
             tsRepository.save(ts);
-
             //加入到tsList中
             tsList.add(ts);
-
-            //显示进度
-            uploadSize += tsFile.length();
-            double progress = uploadSize * 1.0 / totalSize * 100;
-            String format = String.format("%.2f", progress);
-            System.out.println("progress: " + format + "% (" + (i + 1) + "/" + tsFileList.size()
-                    + ")  " + title + "  " + fastdfsFileId);
         }
         return tsList;
     }
@@ -200,11 +216,24 @@ public class UploadToFastdfs {
 
     @Test
     public void runUploadSingleVideo() {
-        String folder = "C:\\Users\\Administrator\\Videos\\Desktop";
-        String filename = "2020.02.08 搭建fastdfs文件服务器.mp4";
+//        String folder = "C:\\Users\\Administrator\\Videos\\Desktop";
+//        String filename = "2020.02.08 演示视频点播网站三部曲.mp4";
+        String folder = "D:\\FFOutput";
+        String filename = "E22铁金刚之大破量子危机].Quantum.of.Solace.2008-格式工厂导出.mp4";
         File videoFile = new File(folder, filename);
         Video video = prepareSingleVideo(videoFile);
         String htmlUrl = video.getHtmlUrl();
         System.out.println(htmlUrl);
+    }
+
+    @Test
+    public void runUploadFolder() {
+        File folder = new File("");
+        File[] files = folder.listFiles();
+        for (File videoFile : files) {
+            Video video = prepareSingleVideo(videoFile);
+            String htmlUrl = video.getHtmlUrl();
+            System.out.println(htmlUrl);
+        }
     }
 }
