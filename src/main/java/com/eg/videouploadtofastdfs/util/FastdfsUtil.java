@@ -31,9 +31,29 @@ public class FastdfsUtil {
         }
     }
 
+    /**
+     * 上传文件
+     *
+     * @param file
+     * @return
+     * @throws IOException
+     * @throws MyException
+     */
     public static String upload(File file) throws IOException, MyException {
         return storageClient1.upload_file1(file.getAbsolutePath(),
                 FilenameUtils.getExtension(file.getName()), null);
+    }
+
+    /**
+     * 删除文件
+     *
+     * @param file_id
+     * @return
+     * @throws IOException
+     * @throws MyException
+     */
+    public static int delete(String file_id) throws IOException, MyException {
+        return storageClient1.delete_file1(file_id);
     }
 
     public static void main(String[] args) throws IOException, MyException {
