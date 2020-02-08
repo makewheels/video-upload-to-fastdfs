@@ -1,6 +1,6 @@
 package com.eg.videouploadtofastdfs.util;
 
-import com.eg.videouploadtofastdfs.MakeM3u8Result;
+import com.eg.videouploadtofastdfs.bean.MakeM3u8Result;
 
 import java.io.BufferedReader;
 import java.io.File;

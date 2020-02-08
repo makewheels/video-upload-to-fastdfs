@@ -1,4 +1,4 @@
-package com.eg.videouploadtofastdfs;
+package com.eg.videouploadtofastdfs.bean;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -18,5 +18,7 @@ public class Video {
     private String videoId;
     private String htmlUrl;
     private String m3u8Url;
+    private String htmlFastdfsFileId;
+    private String m3u8FastdfsFileId;
     private Date createTime;
 }

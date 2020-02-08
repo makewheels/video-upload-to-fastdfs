@@ -1,5 +1,9 @@
 package com.eg.videouploadtofastdfs;
 
+import com.eg.videouploadtofastdfs.bean.MakeM3u8Result;
+import com.eg.videouploadtofastdfs.bean.Video;
+import com.eg.videouploadtofastdfs.repository.TsRepository;
+import com.eg.videouploadtofastdfs.repository.VideoRepository;
 import com.eg.videouploadtofastdfs.util.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -15,6 +19,8 @@ import java.io.IOException;
 import java.util.*;
 
 /**
+ * 上传到我自己搭建的fastdfs服务器
+ *
  * @time 2020-02-08 11:12
  */
 @RunWith(SpringRunner.class)
@@ -33,15 +39,15 @@ public class UploadToFastdfs {
      * @param videoId
      * @return
      */
-    private List<Ts> uploadTsList(MakeM3u8Result makeM3u8Result, String title, String videoId) {
-        //用文件大小显示进度，先统计所有碎片总大小
+    private List<MakeM3u8Result.Ts> uploadTsList(MakeM3u8Result makeM3u8Result, String title, String videoId) {
+        //为了用文件大小显示进度，先统计所有碎片总大小
         long totalSize = 0;
         long uploadSize = 0;
         List<File> tsFileList = makeM3u8Result.getTsFileList();
         for (File tsFile : tsFileList) {
             totalSize += tsFile.length();
         }
-        List<Ts> tsList = new ArrayList<>();
+        List<MakeM3u8Result.Ts> tsList = new ArrayList<>();
         //执行上传
         for (int i = 0; i < tsFileList.size(); i++) {
             //上传到文件服务器
@@ -54,11 +60,12 @@ public class UploadToFastdfs {
             }
 
             //保存ts
-            Ts ts = new Ts();
+            MakeM3u8Result.Ts ts = new MakeM3u8Result.Ts();
             ts.setCreateTime(new Date());
             ts.setFastdfsFileId(fastdfsFileId);
             ts.setVideoId(videoId);
             ts.setFilename(tsFile.getName());
+            ts.setFilesize(tsFile.length());
             //设置索引，为了改m3u8文件的时候用
             String baseName = FilenameUtils.getBaseName(tsFile.getName());
             ts.setIndex(Integer.parseInt(baseName.split("-")[1]));
@@ -72,12 +79,20 @@ public class UploadToFastdfs {
             double progress = uploadSize * 1.0 / totalSize * 100;
             String format = String.format("%.2f", progress);
             System.out.println("progress: " + format + "% (" + (i + 1) + "/" + tsFileList.size()
-                    + ")  " + title);
+                    + ")  " + title + "  " + fastdfsFileId);
         }
         return tsList;
     }
 
-    private String handleM3u8File(MakeM3u8Result makeM3u8Result, List<Ts> tsList) {
+    /**
+     * 处理m3u8
+     *
+     * @param video
+     * @param makeM3u8Result
+     * @param tsList
+     * @return m3u8文件url
+     */
+    private String handleM3u8File(Video video, MakeM3u8Result makeM3u8Result, List<MakeM3u8Result.Ts> tsList) {
         //修改m3u8文件
         File m3u8File = makeM3u8Result.getM3u8File();
         List<String> lines = null;
@@ -94,7 +109,7 @@ public class UploadToFastdfs {
             }
             //找到匹配的index
             int index = Integer.parseInt(FilenameUtils.getBaseName(line).split("-")[1]);
-            for (Ts ts : tsList) {
+            for (MakeM3u8Result.Ts ts : tsList) {
                 if (index == ts.getIndex()) {
                     //设置新的url
                     lines.set(i, Constants.FASTDFS_SERVER + "/" + ts.getFastdfsFileId());
@@ -114,14 +129,16 @@ public class UploadToFastdfs {
         } catch (IOException | MyException e) {
             e.printStackTrace();
         }
-        return Constants.FASTDFS_SERVER + "/" + m3u8FastdfsFileId;
+        video.setM3u8FastdfsFileId(m3u8FastdfsFileId);
+        String m3u8Url = Constants.FASTDFS_SERVER + "/" + m3u8FastdfsFileId;
+        video.setM3u8Url(m3u8Url);
+        return m3u8Url;
     }
 
     /**
      * 准备单个视频文件
      *
      * @param videoFile
-     * @throws IOException
      */
     private Video prepareSingleVideo(File videoFile) {
         Video video = new Video();
@@ -142,17 +159,17 @@ public class UploadToFastdfs {
         System.out.println(title + " 转码完成，开始上传，ts碎片总共 "
                 + makeM3u8Result.getTsFileList().size() + " 个");
         //上传ts碎片
-        List<Ts> tsList = uploadTsList(makeM3u8Result, title, videoId);
+        List<MakeM3u8Result.Ts> tsList = uploadTsList(makeM3u8Result, title, videoId);
         //修改m3u8文件，上传到服务器
-        String m3u8Url = handleM3u8File(makeM3u8Result, tsList);
-        video.setM3u8Url(m3u8Url);
+        String m3u8Url = handleM3u8File(video, makeM3u8Result, tsList);
         //制作html
         Map<String, String> params = new HashMap<>();
         params.put("title", title);
         params.put("m3u8Url", m3u8Url);
         File htmlFile = null;
         try {
-            htmlFile = FreemakerUtil.createHtmlByMode("video.html.ftl", "video.html", params);
+            htmlFile = FreemakerUtil.createHtmlByMode("video.html.ftl",
+                    "video.html", params);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -163,6 +180,7 @@ public class UploadToFastdfs {
         } catch (IOException | MyException e) {
             e.printStackTrace();
         }
+        video.setHtmlFastdfsFileId(htmlFastdfsFileId);
         String htmlUrl = Constants.FASTDFS_SERVER + "/" + htmlFastdfsFileId;
         video.setHtmlUrl(htmlUrl);
         //删除html文件
@@ -183,7 +201,7 @@ public class UploadToFastdfs {
     @Test
     public void runUploadSingleVideo() {
         String folder = "C:\\Users\\Administrator\\Videos\\Desktop";
-        String filename = "Desktop 2020.02.08 - 13.51.44.03.mp4";
+        String filename = "2020.02.08 搭建fastdfs文件服务器.mp4";
         File videoFile = new File(folder, filename);
         Video video = prepareSingleVideo(videoFile);
         String htmlUrl = video.getHtmlUrl();

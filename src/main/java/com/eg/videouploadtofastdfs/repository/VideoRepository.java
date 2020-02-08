@@ -1,5 +1,6 @@
-package com.eg.videouploadtofastdfs;
+package com.eg.videouploadtofastdfs.repository;
 
+import com.eg.videouploadtofastdfs.bean.Video;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -7,6 +8,6 @@ import org.springframework.stereotype.Repository;
  * @time 2020-02-02 00:03
  */
 @Repository
-public interface TsRepository extends MongoRepository<Ts, String> {
+public interface VideoRepository extends MongoRepository<Video, String> {
 
 }
