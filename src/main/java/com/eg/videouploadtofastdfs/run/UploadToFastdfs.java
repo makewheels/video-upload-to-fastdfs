@@ -60,6 +60,16 @@ public class UploadToFastdfs {
                 fastdfsFileId = FastdfsUtil.upload(tsFile);
             } catch (IOException | MyException e) {
                 e.printStackTrace();
+                try {
+                    fastdfsFileId = FastdfsUtil.upload(tsFile);
+                } catch (IOException | MyException ex) {
+                    ex.printStackTrace();
+                    try {
+                        fastdfsFileId = FastdfsUtil.upload(tsFile);
+                    } catch (IOException | MyException exc) {
+                        exc.printStackTrace();
+                    }
+                }
             }
 
             //显示进度
@@ -230,7 +240,7 @@ public class UploadToFastdfs {
 
     @Test
     public void runUploadFolder() {
-        File folder = new File("");
+        File folder = new File("D:\\VDR");
         File[] files = folder.listFiles();
         for (File videoFile : files) {
             Video video = prepareSingleVideo(videoFile);
