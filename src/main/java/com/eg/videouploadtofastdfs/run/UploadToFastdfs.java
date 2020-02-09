@@ -229,9 +229,9 @@ public class UploadToFastdfs {
     @Test
     public void runUploadSingleVideo() {
 //        String folder = "C:\\Users\\Administrator\\Videos\\Desktop";
-//        String filename = "2020.02.08 演示视频点播网站三部曲.mp4";
-        String folder = "D:\\FFOutput";
-        String filename = "E22铁金刚之大破量子危机].Quantum.of.Solace.2008-格式工厂导出.mp4";
+//        String filename = "2020.02.09演示youtube-dl和音视频混流.mp4";
+        String folder = "D:\\workSpace\\premiere\\2020.02.09 Minions\\out";
+        String filename = "2020.02.09 Minions.mp4";
         File videoFile = new File(folder, filename);
         Video video = prepareSingleVideo(videoFile);
         String htmlUrl = video.getHtmlUrl();
