@@ -1,59 +1,143 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>E23大破天幕杀机].James.Bond.007.Skyfall.2012-加载字幕</title>
-		<link href="https://cdn.staticfile.org/video.js/7.7.4/video-js.min.css" rel="stylesheet">
-		<script src="https://cdn.staticfile.org/video.js/7.7.4/video.min.js"></script>
+<head>
+	<meta charset="utf-8">
+	<title>E23大破天幕杀机].James.Bond.007.Skyfall.2012-加载字幕</title>
+	<!--videojs-->
+	<link href="https://cdn.staticfile.org/video.js/7.7.4/video-js.min.css" rel="stylesheet">
+	<script src="https://cdn.staticfile.org/video.js/7.7.4/video.min.js"></script>
 
-		<script src="https://lib.baomitu.com/videojs-flash/2.2.0/videojs-flash.min.js"></script>
-		<script src="http://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
+	<!-- <script src="https://lib.baomitu.com/videojs-flash/2.2.0/videojs-flash.min.js"></script> -->
+	<!-- <script src="http://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script> -->
 
-		<!--  Bootstrap  -->
-		<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+	<!--  Bootstrap  -->
+	<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
 
-	</head>
+	<!--videojs-mobile-ui-->
+	<script src="https://cdn.jsdelivr.net/npm/videojs-mobile-ui@0.4.1/dist/videojs-mobile-ui.min.js"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/videojs-mobile-ui@0.4.1/dist/videojs-mobile-ui.min.css">
 
-	<body>
-		<div>
-			<div style="float: left;">
-				<video id="videoId" class="video-js vjs-default-skin" controls preload="auto">
-					<source src="http://39.96.78.70:9000/group1/M00/00/77/rBg3Ol5A7dmAKTLnAAE4rTAi4ms37.m3u8" type="application/x-mpegURL">
-					<track kind="subtitles" src="http://39.96.78.70:9000/group1/M00/00/6F/rBg3Ol5A5TuAZPrdAAEcMBd2piM949.vtt" label="这是默认字幕"
-					 default>
-				</video>
-				<div style="margin-top: 8px;margin-left: 8px; font-size: 20px;">E23大破天幕杀机].James.Bond.007.Skyfall.2012-加载字幕</div>
-			</div>
-			<div style="float: left;">
-				<div style="margin-top: 25px;margin-left: 20px;" style="background-color: red;">
-					<button id="btn_fullScreen" type="button" class="btn btn-info">
-						<span class="glyphicon glyphicon-play" style="font-size: 20px;"></span>
-						<span style="margin-left: 8px;font-size: 22px;">全 屏</span>
-					</button>
-				</div>
-				<div style="margin-top: 18px;margin-left: 20px;">
-					<button id="btn_pageFullScreen" type="button" class="btn btn-info">
-						<span style="margin-left: 8px;font-size: 22px;">网页全屏</span>
-					</button>
-				</div>
-			</div>
+</head>
+
+<body>
+<div>
+	<div style="float: left;">
+		<video id="videoId" class="video-js vjs-default-skin" controls preload="auto">
+			<source src="http://39.96.78.70:9000/group1/M00/00/77/rBg3Ol5A7dmAKTLnAAE4rTAi4ms37.m3u8" type="application/x-mpegURL">
+			<track kind="subtitles" src="http://39.96.78.70:9000/group1/M00/00/6F/rBg3Ol5A5TuAZPrdAAEcMBd2piM949.vtt" label="这是默认字幕"
+				   default>
+		</video>
+		<div style="margin-top: 8px;margin-left: 8px; font-size: 20px;">E23大破天幕杀机].James.Bond.007.Skyfall.2012-加载字幕</div>
+	</div>
+	<div style="float: left;">
+		<div style="margin-top: 25px;margin-left: 20px;" style="background-color: red;">
+			<button id="btn_fullScreen" type="button" class="btn btn-info">
+				<!-- <span class="glyphicon glyphicon-play" style="font-size: 20px;"></span> -->
+				<span style="margin-left: 8px;font-size: 22px;">全 屏</span>
+			</button>
 		</div>
-		<style>
-			button {
-				width: 170px;
-				height: 50px;
+		<div style="margin-top: 18px;margin-left: 20px;">
+			<button id="btn_pageFullScreen" type="button" class="btn btn-info">
+				<span style="margin-left: 8px;font-size: 22px;">网页全屏</span>
+			</button>
+		</div>
+	</div>
+</div>
+<style>
+	button {
+		width: 170px;
+		height: 50px;
+	}
+</style>
+
+<script>
+	function isPhone() {
+		let userAgentInfo = navigator.userAgent;
+		let mobileAgents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPod"];
+		let mobile_flag = false;
+		for (let v = 0; v < mobileAgents.length; v++) {
+			if (userAgentInfo.indexOf(mobileAgents[v]) > 0) {
+				mobile_flag = true;
+				break;
 			}
-		</style>
-		<script>
-			var player = videojs('videoId', {
-				width: 975,
-				height: 572
-			});
-			document.getElementById("btn_fullScreen").onclick = function() {
-				player.fullScreen();
-			};
-		</script>
-	</body>
+		}
+		return mobile_flag;
+	}
+
+	function isIpad() {
+		let userAgentInfo = navigator.userAgent;
+		let mobileAgents = ["iPad"];
+		let mobile_flag = false;
+		for (let v = 0; v < mobileAgents.length; v++) {
+			if (userAgentInfo.indexOf(mobileAgents[v]) > 0) {
+				mobile_flag = true;
+				break;
+			}
+		}
+		return mobile_flag;
+	}
+
+	function forPc() {
+		var player = videojs('videoId', {
+			width: 975,
+			height: 572
+		});
+		player.volume(0.7);
+		document.getElementById("btn_fullScreen").onclick = function() {
+			player.requestFullscreen();
+			player.play();
+		};
+		//获取滚动条宽度
+		function getScrollbarWidth() {
+			var odiv = document.createElement('div'), //创建一个div
+					styles = {
+						width: '100px',
+						height: '100px',
+						overflowY: 'scroll' //让他有滚动条
+					},
+					i, scrollbarWidth;
+			for (i in styles) odiv.style[i] = styles[i];
+			document.body.appendChild(odiv); //把div添加到body中
+			scrollbarWidth = odiv.offsetWidth - odiv.clientWidth; //相减
+			odiv.remove(); //移除创建的div
+			return scrollbarWidth; //返回滚动条宽度
+		}
+		document.getElementById("btn_pageFullScreen").onclick = function() {
+			player.width($(window).width() - getScrollbarWidth());
+			player.height($(window).height());
+			player.play();
+		};
+	}
+
+	function forPhone() {
+		var headHTML = document.getElementsByTagName('head')[0].innerHTML;
+		headHTML +=
+				'<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />';
+		document.getElementsByTagName('head')[0].innerHTML = headHTML;
+		document.getElementById("btn_fullScreen").style.display = "none";
+		document.getElementById("btn_pageFullScreen").style.display = "none";
+		var style =
+				'<style>.video-js .vjs-menu-button-inline.vjs-slider-active,.video-js .vjs-menu-button-inline:focus,.video-js .vjs-menu-button-inline:hover,.video-js.vjs-no-flex .vjs-menu-button-inline{width:10em}.video-js .vjs-controls-disabled .vjs-big-play-button{display:none!important}.video-js .vjs-control{width:3em}.video-js .vjs-menu-button-inline:before{width:1.5em}.vjs-menu-button-inline .vjs-menu{left:3em}.video-js .vjs-load-progress div,.vjs-seeking .vjs-big-play-button,.vjs-waiting .vjs-big-play-button{display:none!important}.video-js .vjs-mouse-display:after,.video-js .vjs-play-progress:after{padding:0 .4em .3em}.video-js.vjs-ended .vjs-loading-spinner{display:none}.video-js.vjs-ended .vjs-big-play-button{display:block!important}.video-js.vjs-paused .vjs-big-play-button,.vjs-paused.vjs-has-started.video-js .vjs-big-play-button,video-js.vjs-ended .vjs-big-play-button{display:block}.video-js .vjs-big-play-button{top:50%;left:50%;margin-left:-1.5em;background-color:#000;font-size:3.5em;border-radius:37%;height:1.9em!important;line-height:1.9em!important;margin-top:-.95em!important}.video-js .vjs-big-play-button:active,.video-js .vjs-big-play-button:focus,.video-js:hover .vjs-big-play-button{background-color:#000}.video-js .vjs-loading-spinner{border-color:#fff}.video-js .vjs-control-bar2{background-color:#000}.video-js .vjs-control-bar{background-color:#000!important;color:#fff;font-size:12px}.video-js .vjs-play-progress,.video-js .vjs-volume-level{background-color:#2483d5}</style>';
+		var ele = document.createElement('div');
+		ele.innerHTML = style;
+		document.getElementsByTagName('head')[0].appendChild(ele.firstElementChild)
+		var player = videojs('videoId', {
+			width: $(window).width(),
+			height: $(window).width() * 0.57
+		});
+		player.mobileUi();
+	}
+
+	//判断客户端机型来执行
+	if (isIpad()) {
+
+	} else if (isPhone()) {
+		forPhone();
+	} else {
+		forPc();
+	}
+</script>
+</body>
 </html>
