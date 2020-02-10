@@ -230,9 +230,8 @@ public class UploadToFastdfs {
     public void runUploadSingleVideo() {
 //        String folder = "C:\\Users\\Administrator\\Videos\\Desktop";
 //        String filename = "2020.02.09演示youtube-dl和音视频混流.mp4";
-        String folder = "D:\\workSpace\\premiere\\2020.02.09 Minions\\out";
-        String filename = "2020.02.09 Minions.mp4";
-        File videoFile = new File(folder, filename);
+        String filePath = "D:\\FFOutput\\E23大破天幕杀机].James.Bond.007.Skyfall.2012.mp4";
+        File videoFile = new File(filePath);
         Video video = prepareSingleVideo(videoFile);
         String htmlUrl = video.getHtmlUrl();
         System.out.println(htmlUrl);
